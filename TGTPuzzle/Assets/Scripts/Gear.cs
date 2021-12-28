@@ -12,26 +12,20 @@ public class Gear : MonoBehaviour
     private float max;
     [SerializeField, Range(0, .5f)]
     private float min;
-    private bool corectPlace;
     private Animator animator;
 
-
+    public int Id { get { return id; } }
 
     void Start()
     {
-        corectPlace = false;
         animator = GetComponent<Animator>();
-        CheckPlacement();
+        animator.enabled = false;
         GenerateColorFromId();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown("space"))
-        {
-            corectPlace = !corectPlace;
-            CheckPlacement();
-        }
+
     }
 
     private void GenerateColorFromId()
@@ -66,9 +60,9 @@ public class Gear : MonoBehaviour
         }
     }
 
-    private void CheckPlacement()
+    public void Animate()
     {
-        animator.enabled = corectPlace;
+        animator.enabled = true;
     }
 }
 
