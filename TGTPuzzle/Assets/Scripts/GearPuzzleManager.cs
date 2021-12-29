@@ -49,7 +49,14 @@ public class GearPuzzleManager : MonoBehaviour
     {
         gearLevels[currentLevel].SetActive(false);
         currentLevel++;
-        UpdateIndicators();
-        gearLevels[currentLevel].SetActive(true);
+        if (currentLevel < gearLevels.Length)
+        {
+            UpdateIndicators();
+            gearLevels[currentLevel].SetActive(true);
+        }
+        else
+        {
+            //win
+        }
     }
 }
