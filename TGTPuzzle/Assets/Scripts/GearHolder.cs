@@ -8,8 +8,8 @@ public class GearHolder : MonoBehaviour
 
 
     #region feilds
-    [SerializeField] //refarence til GearPuzzelManageren 
-    private GearPuzzleManager manager;
+    //refarence til GearPuzzelManageren 
+    private GearLevel level;
     [SerializeField] //positionen hvor et gear skal være hvis den er seleted fra denne holder 
     private Transform selectedPos;
     [SerializeField] //arayet med de spawnpoints holderen indeholder
@@ -55,7 +55,10 @@ public class GearHolder : MonoBehaviour
     void Start()
     {
         //oprettter den tomme stack af gears 
-        gears = new Stack<Gear>(); 
+        gears = new Stack<Gear>();
+
+        //finder referencen til managerern fra det level holder sidder på
+        level = GetComponentInParent<GearLevel>();
 
         //tilføjer de gears der ligger i initial gaears srreyet til staccken
         for (int i = 0; i < initialGears.Length; i++)
@@ -71,26 +74,26 @@ public class GearHolder : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (manager.SelectedGearHolder == null)
+        if (level.SelectedGearHolder == null)
         {
-            manager.SelectedGearHolder = SelectHolder();
+            level.SelectedGearHolder = SelectHolder();
         }
-        else if (manager.SelectedGearHolder != this)
+        else if (level.SelectedGearHolder != this)
         {
             if (PlaceGearFromManager())
             {
-                manager.SelectedGearHolder = null;
+                level.SelectedGearHolder = null;
             }
             else 
             {
-                manager.SelectedGearHolder.DeselectHolder();
-                manager.SelectedGearHolder = SelectHolder();
+                level.SelectedGearHolder.DeselectHolder();
+                level.SelectedGearHolder = SelectHolder();
             }
         }
         else
         {
             DeselectHolder();
-            manager.SelectedGearHolder = null;
+            level.SelectedGearHolder = null;
         }
     }
 
@@ -101,10 +104,10 @@ public class GearHolder : MonoBehaviour
         // måske ikke den bedste måde man kunne bruge try catch eller noget andet måske ?
         if (gears.Count > 0)
         {
-            if (gears.Peek().Id != manager.SelectedGearHolder.Gears.Peek().Id) { return false; }
+            if (gears.Peek().Id != level.SelectedGearHolder.Gears.Peek().Id) { return false; }
         }
 
-        AddGear(manager.SelectedGearHolder.Gears.Pop());
+        AddGear(level.SelectedGearHolder.Gears.Pop());
 
         return true;
     }
@@ -140,7 +143,7 @@ public class GearHolder : MonoBehaviour
             {
                 g.Animate();
             }
-            manager.WinCheck();
+            level.WinCheck();
         }
     }
 }

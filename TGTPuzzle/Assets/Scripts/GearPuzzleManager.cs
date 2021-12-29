@@ -14,13 +14,12 @@ public class GearPuzzleManager : MonoBehaviour
     [SerializeField]
     private Color notCompleteColor;
 
-    [Header("Gear holders")]
+    [Header("Levels")]
     [SerializeField]
-    private GearHolder[] gearHolders;
+    private GameObject[] gearLevels;
 
     private int currentLevel;
 
-    public GearHolder SelectedGearHolder { get; set; }
 
 
 
@@ -29,6 +28,7 @@ public class GearPuzzleManager : MonoBehaviour
     {
         currentLevel = 0;
         UpdateIndicators();
+        gearLevels[currentLevel].SetActive(true);
     }
 
     // Update is called once per frame
@@ -45,18 +45,11 @@ public class GearPuzzleManager : MonoBehaviour
         }
     }
 
-    public void WinCheck()
+    public void LoadNextLevel()
     {
-        for (int i = 0; i < gearHolders.Length; i++)
-        {
-            if (!gearHolders[i].Complete)
-            {
-                return;
-            }
-        }
-
+        gearLevels[currentLevel].SetActive(false);
         currentLevel++;
         UpdateIndicators();
-        //load new level
+        gearLevels[currentLevel].SetActive(true);
     }
 }
