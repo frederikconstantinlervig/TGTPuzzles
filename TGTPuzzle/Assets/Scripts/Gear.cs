@@ -18,11 +18,15 @@ public class Gear : MonoBehaviour
 
     public int Id { get { return id; } }
 
-    void Start()
+    private void Awake()
     {
         animator = GetComponent<Animator>();
         animator.enabled = false;
         GenerateColorFromId();
+    }
+    void Start()
+    {
+
     }
 
     void Update()
@@ -60,6 +64,7 @@ public class Gear : MonoBehaviour
             default:
                 break;
         }
+
     }
 
     public void Animate()

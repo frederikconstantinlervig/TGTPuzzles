@@ -20,7 +20,7 @@ public class GearPuzzleManager : MonoBehaviour
 
     private int currentLevel;
 
-    public Gear SelectedGear { get; set; }
+    public GearHolder SelectedGearHolder { get; set; }
 
 
 

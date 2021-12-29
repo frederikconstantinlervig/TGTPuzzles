@@ -25,6 +25,8 @@ public class GearHolder : MonoBehaviour
     {
         get
         {
+            if (gears == null) { return false; }
+
             //hvis holderen er tom teller den som complete 
             if (gears.Count < 1) { return true; }
 
@@ -46,6 +48,8 @@ public class GearHolder : MonoBehaviour
             return true;
         }
     }
+
+    private Stack<Gear> Gears { get { return gears; } }
     #endregion
 
     void Start()
@@ -67,30 +71,65 @@ public class GearHolder : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (manager.SelectedGear == null)
+        if (manager.SelectedGearHolder == null)
         {
-            manager.SelectedGear = RemoveGear();
+            manager.SelectedGearHolder = SelectHolder();
+        }
+        else if (manager.SelectedGearHolder != this)
+        {
+            if (PlaceGearFromManager())
+            {
+                manager.SelectedGearHolder = null;
+            }
+            else 
+            {
+                manager.SelectedGearHolder.DeselectHolder();
+                manager.SelectedGearHolder = SelectHolder();
+            }
         }
         else
         {
-            if (AddGear(manager.SelectedGear))
-            {
-                manager.SelectedGear = null;
-            }
+            DeselectHolder();
+            manager.SelectedGearHolder = null;
         }
     }
 
-    public bool AddGear(Gear gear)
+    private bool PlaceGearFromManager()
     {
         if (gears.Count >= spawnPoints.Length) { return false; }
-
 
         // måske ikke den bedste måde man kunne bruge try catch eller noget andet måske ?
         if (gears.Count > 0)
         {
-            if (gears.Peek().Id != gear.Id) { return false; }
+            if (gears.Peek().Id != manager.SelectedGearHolder.Gears.Peek().Id) { return false; }
         }
-        
+
+        AddGear(manager.SelectedGearHolder.Gears.Pop());
+
+        return true;
+    }
+
+
+    private GearHolder SelectHolder()
+    {
+        if (Complete) { return null; }
+
+        gears.Peek().transform.position = selectedPos.position;
+        return this;
+    }
+
+    public void DeselectHolder()
+    {
+        gears.Peek().transform.position = spawnPoints[gears.Count - 1].position;
+    }
+
+
+
+    private void AddGear(Gear gear)
+    {
+
+        if (gears.Count >= spawnPoints.Length) { return; }
+
 
         gears.Push(gear);
         gear.transform.position = spawnPoints[gears.Count - 1].position;
@@ -103,18 +142,5 @@ public class GearHolder : MonoBehaviour
             }
             manager.WinCheck();
         }
-
-        return true;
-    }
-
-    public Gear RemoveGear()
-    {
-        if (Complete) { return null; }
-
-        Gear gear = gears.Pop();
-
-        gear.transform.position = selectedPos.position;
-
-        return gear;
     }
 }
