@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Gear : MonoBehaviour
 {
+    // vi børlave en custom editor til de her 
+
     [Header("ID")]
     [SerializeField, Range(0, 8)]
     private int id;

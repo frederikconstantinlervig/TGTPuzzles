@@ -4,41 +4,56 @@ using UnityEngine;
 
 public class GearHolder : MonoBehaviour
 {
-    [SerializeField]
+    // vi børlave en custom editor til de her 
+
+
+    #region feilds
+    [SerializeField] //refarence til GearPuzzelManageren 
     private GearPuzzleManager manager;
-    [SerializeField]
+    [SerializeField] //positionen hvor et gear skal være hvis den er seleted fra denne holder 
     private Transform selectedPos;
-    [SerializeField]
+    [SerializeField] //arayet med de spawnpoints holderen indeholder
     private Transform[] spawnPoints;
-    [SerializeField]
+    [SerializeField] //arayet med de gears holderen skal starte med
     private Gear[] initialGears;
   
-    private Stack<Gear> gears;
+    private Stack<Gear> gears; //stacken med gears
+    #endregion
 
+    #region properties
     public bool Complete
     {
         get
         {
+            //hvis holderen er tom teller den som complete 
+            if (gears.Count < 1) { return true; }
+
+            //hvis holder ikke er fuld kan den ikke være complete
             if (gears.Count < spawnPoints.Length) { return false; }
 
+            //tjækker om alle gears har samme id
             int id = gears.Peek().Id;
             foreach(Gear g in gears)
             {
+                //hvis der er to gears der ikke har samme id ikke, er den ikke complete
                 if(g.Id != id) 
                 {
                     return false;
                 }
             }
 
+            //hvis den når her ned betyder det at holderen er fuld og at den kun indeholder gear 
             return true;
         }
     }
+    #endregion
 
-    // Start is called before the first frame update
     void Start()
     {
-        gears = new Stack<Gear>();
+        //oprettter den tomme stack af gears 
+        gears = new Stack<Gear>(); 
 
+        //tilføjer de gears der ligger i initial gaears srreyet til staccken
         for (int i = 0; i < initialGears.Length; i++)
         {
             AddGear(initialGears[i]);
@@ -69,6 +84,14 @@ public class GearHolder : MonoBehaviour
     {
         if (gears.Count >= spawnPoints.Length) { return false; }
 
+
+        // måske ikke den bedste måde man kunne bruge try catch eller noget andet måske ?
+        if (gears.Count > 0)
+        {
+            if (gears.Peek().Id != gear.Id) { return false; }
+        }
+        
+
         gears.Push(gear);
         gear.transform.position = spawnPoints[gears.Count - 1].position;
 
@@ -86,7 +109,7 @@ public class GearHolder : MonoBehaviour
 
     public Gear RemoveGear()
     {
-        if (gears.Count < 1 || Complete) { return null; }
+        if (Complete) { return null; }
 
         Gear gear = gears.Pop();
 

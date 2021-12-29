@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GearPuzzleManager : MonoBehaviour
 {
+    // vi børlave en custom editor til de her 
+
     [Header("Level indicators")]
     [SerializeField]
     private SpriteRenderer[] levelIndicarors;
@@ -15,8 +17,6 @@ public class GearPuzzleManager : MonoBehaviour
     [Header("Gear holders")]
     [SerializeField]
     private GearHolder[] gearHolders;
-    [SerializeField]
-    private int winNr;
 
     private int currentLevel;
 
@@ -47,20 +47,16 @@ public class GearPuzzleManager : MonoBehaviour
 
     public void WinCheck()
     {
-        int curentNr = 0;
         for (int i = 0; i < gearHolders.Length; i++)
         {
-            if (gearHolders[i].Complete)
+            if (!gearHolders[i].Complete)
             {
-                curentNr++;
+                return;
             }
         }
 
-        if (curentNr >= winNr)
-        {
-            currentLevel++;
-            UpdateIndicators();
-            //load new level
-        }
+        currentLevel++;
+        UpdateIndicators();
+        //load new level
     }
 }
