@@ -5,19 +5,25 @@ using UnityEngine;
 public class BlockLevel : MonoBehaviour
 {
     [SerializeField] private int gridSice;
-    [SerializeField] private Block[] BlocksToPlace;
+
+    private Block[] blocksToPlace;
 
     private BlockNode[,] nodeGrid;
 
-    //public BlockNode[,] NodeGrid { get => nodeGrid; }
+    public BlockNode[,] NodeGrid { get => nodeGrid; }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
+    {
+        blocksToPlace = GetComponentsInChildren<Block>();
+    }
+
+    private void Start()
     {
         GenerateNodeGrid();
-        for (int i = 0; i < BlocksToPlace.Length; i++)
+
+        for (int i = 0; i < blocksToPlace.Length; i++)
         {
-            BlocksToPlace[i].PlaceBlock(nodeGrid);
+            blocksToPlace[i].PlaceBlock();
         }
     }
 
@@ -34,6 +40,7 @@ public class BlockLevel : MonoBehaviour
                 nodeObject.transform.parent = transform;
 
                 BlockNode node = nodeObject.AddComponent<BlockNode>();
+                node.PositionInGrid = new Vector2(x, y);
                 nodeGrid[x, y] = node;
             }
         }
