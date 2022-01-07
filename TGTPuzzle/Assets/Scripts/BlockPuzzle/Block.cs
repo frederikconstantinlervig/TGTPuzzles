@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
+
+    [SerializeField] private bool keyBlock;
     [SerializeField] private float length;
     [SerializeField] private bool xAxies;
     [SerializeField] private Vector2 startPosition;
@@ -33,70 +35,76 @@ public class Block : MonoBehaviour
     private void OnMouseDrag()
     {
         Vector2 distance = ((Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) + mouseOffset - (Vector2)transform.position) * vectorAxies;
-        //float moveDir = (xAxies) ? distance.x : distance.y;
 
-
-        if (Mathf.Abs(distance.magnitude) > .5f)
+        if (distance.magnitude > .5f)
         {
             BlockNode[,] grid = level.NodeGrid;
 
-            vectorAxies = (distance.magnitude > 0) ? vectorAxies: vectorAxies * -1;
+            Vector2 movementDiretion;
+            Vector2 nextNodePosition;
+            if(distance.x + distance.y > 0)
+            {
+                movementDiretion = vectorAxies;
+                nextNodePosition = nodeTopRight.PositionInGrid + movementDiretion;
+            }
+            else
+            {
+                movementDiretion = vectorAxies * -1;
+                nextNodePosition = nodeBottonLeft.PositionInGrid + movementDiretion;
+            }
 
-            Vector2 nextNodePosition = (distance.magnitude > 0) ? nodeTopRight.PositionInGrid + vectorAxies : nodeBottonLeft.PositionInGrid + vectorAxies;
+            if (keyBlock)
+            {
+                level.WinCheck(nextNodePosition);
+            }
 
-            //try
-            //{
-            //    BlockNode nextNode = grid[(int)nextNodePosition.x, (int)nextNodePosition.y];
+            try
+            {
+                BlockNode nextNode = grid[(int)nextNodePosition.x, (int)nextNodePosition.y];
 
-            //    if (nextNode.BlockOnNode == null)
-            //    {
-            //        transform.position = (Vector2)transform.position + vectorAxies;
+                if (nextNode.BlockOnNode == null)
+                {
+                    transform.position = (Vector2)transform.position + movementDiretion;
 
-            //        nextNode.BlockOnNode = this;
+                    nextNode.BlockOnNode = this;
 
-            //        if(distance.magnitude > 0)
-            //        {
-            //            nodeTopRight = nextNode;
+                    if (distance.x + distance.y > 0)
+                    {
+                        nodeTopRight = nextNode;
 
-            //            nextNodePosition = nodeBottonLeft.PositionInGrid + vectorAxies;
+                        nextNodePosition = nodeBottonLeft.PositionInGrid + movementDiretion;
 
-            //            nodeBottonLeft = grid[(int)nextNodePosition.x, (int)nextNodePosition.y];
+                        nodeBottonLeft = grid[(int)nextNodePosition.x, (int)nextNodePosition.y];
 
-            //            Vector2 clearNodePosition = nodeBottonLeft.PositionInGrid - vectorAxies;
+                        Vector2 clearNodePosition = nodeBottonLeft.PositionInGrid - movementDiretion;
 
-            //            grid[(int)clearNodePosition.x, (int)clearNodePosition.y].BlockOnNode = null;
-            //        }
-            //        else
-            //        {
-            //            nodeBottonLeft = nextNode;
+                        grid[(int)clearNodePosition.x, (int)clearNodePosition.y].BlockOnNode = null;
+                    }
+                    else
+                    {
+                        nodeBottonLeft = nextNode;
 
-            //            nextNodePosition = nodeTopRight.PositionInGrid + vectorAxies;
+                        nextNodePosition = nodeTopRight.PositionInGrid + movementDiretion;
 
-            //            nodeTopRight = grid[(int)nextNodePosition.x, (int)nextNodePosition.y];
+                        nodeTopRight = grid[(int)nextNodePosition.x, (int)nextNodePosition.y];
 
-            //            Vector2 clearNodePosition = nodeTopRight.PositionInGrid - vectorAxies;
+                        Vector2 clearNodePosition = nodeTopRight.PositionInGrid - movementDiretion;
 
-            //            grid[(int)clearNodePosition.x, (int)clearNodePosition.y].BlockOnNode = null;
-            //        }
+                        grid[(int)clearNodePosition.x, (int)clearNodePosition.y].BlockOnNode = null;
+                    }
 
-            //    }
-            //    else
-            //    {
-            //        Debug.Log(nextNode.BlockOnNode);
-            //    }
+                }
 
-            //}
-            //catch (System.Exception)
-            //{
-            //    Debug.LogWarning(this.name + " out of bounds");
-            //}
+            }
+            catch (System.Exception)
+            {
+
+            }
         }
     }
 
     public void PlaceBlock()
     {
-        //Vector2 offset = (xAxies) ? new Vector2((length - 1) / 2, 0) : new Vector2(0, (length - 1) / 2);
-
         Vector2 offset = vectorAxies * (length - 1) / 2;
 
         BlockNode[,] grid = level.NodeGrid;

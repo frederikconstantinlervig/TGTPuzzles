@@ -10,23 +10,12 @@ public class GearLevel : MonoBehaviour
     private GearHolder[] gearHolders;
 
     [SerializeField] //refarence til GearPuzzelManageren 
-    private GearPuzzleManager manager;
+    private PuzzleManager manager;
     
     public GearHolder[] GearHolders { get => gearHolders; }
-    public GearPuzzleManager Manager { get => manager; }
+    public PuzzleManager Manager { get => manager; }
 
     public GearHolder SelectedGearHolder { get; set; }
-
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void WinCheck()
     {

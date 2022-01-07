@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GearPuzzleManager : MonoBehaviour
+public class PuzzleManager : MonoBehaviour
 {
     // vi børlave en custom editor til de her 
 
@@ -16,47 +16,36 @@ public class GearPuzzleManager : MonoBehaviour
 
     [Header("Levels")]
     [SerializeField]
-    private GameObject[] gearLevels;
+    private GameObject[] levels;
 
-    private int currentLevel;
+    private int levelIndex;
 
-
-
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        currentLevel = 0;
+        levelIndex = 0;
         UpdateIndicators();
-        gearLevels[currentLevel].SetActive(true);
+        levels[levelIndex].SetActive(true);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void UpdateIndicators()
     {
         for (int i = 0; i < levelIndicarors.Length; i++)
         {
-            levelIndicarors[i].color = (i < currentLevel) ? completeColor : notCompleteColor;
+            levelIndicarors[i].color = (i < levelIndex) ? completeColor : notCompleteColor;
         }
     }
 
     public void LoadNextLevel()
     {
-        gearLevels[currentLevel].SetActive(false);
-        currentLevel++;
-        if (currentLevel < gearLevels.Length)
+        levels[levelIndex].SetActive(false);
+        levelIndex++;
+        if (levelIndex < levels.Length)
         {
             UpdateIndicators();
-            gearLevels[currentLevel].SetActive(true);
+            levels[levelIndex].SetActive(true);
         }
         else
         {
-            //win
+            Debug.LogWarning("Win Not impemeted");
         }
     }
 }

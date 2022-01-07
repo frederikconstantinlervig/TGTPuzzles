@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BlockLevel : MonoBehaviour
 {
+    [SerializeField] private PuzzleManager manager;
     [SerializeField] private int gridSice;
 
     private Block[] blocksToPlace;
@@ -46,9 +48,11 @@ public class BlockLevel : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    internal void WinCheck(Vector2 nextNodePosition)
     {
-        
+        if (nextNodePosition.Equals(new Vector2(gridSice, gridSice / 2)))
+        {
+            manager.LoadNextLevel();
+        }
     }
 }
