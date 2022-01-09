@@ -9,6 +9,7 @@ public class Block : MonoBehaviour
     [SerializeField] private float length;
     [SerializeField] private bool xAxies;
     [SerializeField] private Vector2 startPosition;
+    [SerializeField] private float moveDuration;
 
     [SerializeField] private BlockNode nodeTopRight;
 
@@ -20,11 +21,33 @@ public class Block : MonoBehaviour
 
     private Vector2 vectorAxies;
 
+    private Vector2 target;
+
+    //private Vector2 curentPosition;
+
+    //private bool moving;
+
+    public Vector2 Target 
+    { 
+        get { return target; } 
+        
+        set 
+        {
+            target = value;
+            //curentPosition = target;
+
+            StopCoroutine("MoveBlock");
+            StartCoroutine("MoveBlock", moveDuration);
+        } 
+    }
+
     private void Awake()
     {
         vectorAxies = (xAxies) ? Vector2.right : Vector2.up;
 
         level = GetComponentInParent<BlockLevel>();
+
+        //moving = false;
     }
 
     private void OnMouseDown()
@@ -34,7 +57,9 @@ public class Block : MonoBehaviour
 
     private void OnMouseDrag()
     {
-        Vector2 distance = ((Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) + mouseOffset - (Vector2)transform.position) * vectorAxies;
+        //if (moving) { return; }
+
+        Vector2 distance = ((Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) + mouseOffset - Target) * vectorAxies;
 
         if (distance.magnitude > .5f)
         {
@@ -55,7 +80,12 @@ public class Block : MonoBehaviour
 
             if (keyBlock)
             {
-                level.WinCheck(nextNodePosition);
+                if (level.WinCheck(nextNodePosition))
+                {
+                    GetComponent<Animator>().enabled = true;
+                    Target += movementDiretion;
+                    keyBlock = false;
+                }
             }
 
             try
@@ -64,7 +94,8 @@ public class Block : MonoBehaviour
 
                 if (nextNode.BlockOnNode == null)
                 {
-                    transform.position = (Vector2)transform.position + movementDiretion;
+                    //transform.position = (Vector2)transform.position + movementDiretion;
+                    Target += movementDiretion;
 
                     nextNode.BlockOnNode = this;
 
@@ -112,6 +143,7 @@ public class Block : MonoBehaviour
         try
         {
             transform.position = (Vector2)grid[(int)startPosition.x, (int)startPosition.y].transform.position + offset;
+            target = transform.position;
 
             for (int i = 0; i < length; i++)
             {
@@ -140,5 +172,22 @@ public class Block : MonoBehaviour
             Debug.LogError(this.name + " out of bounds");
             return;
         }
+    }
+
+    private IEnumerator MoveBlock(float duration)
+    {
+        //moving = true;
+
+        Vector2 startPosition = transform.position;
+        float percent = 0;
+
+        while(percent < 1)
+        {
+            percent += Time.deltaTime / duration;
+            transform.position = Vector2.Lerp(startPosition, Target, percent);
+            yield return null;
+        }
+
+        //moving = false;
     }
 }

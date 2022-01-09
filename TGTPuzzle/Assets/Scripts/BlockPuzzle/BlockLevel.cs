@@ -48,11 +48,20 @@ public class BlockLevel : MonoBehaviour
         }
     }
 
-    internal void WinCheck(Vector2 nextNodePosition)
+    public bool WinCheck(Vector2 nextNodePosition)
     {
         if (nextNodePosition.Equals(new Vector2(gridSice, gridSice / 2)))
         {
-            manager.LoadNextLevel();
+            manager.LevelComplete();
+
+            for (int i = 0; i < blocksToPlace.Length; i++)
+            {
+                blocksToPlace[i].GetComponent<Collider2D>().enabled = false;
+            }
+
+            return true;
         }
+        return false;
     }
+
 }

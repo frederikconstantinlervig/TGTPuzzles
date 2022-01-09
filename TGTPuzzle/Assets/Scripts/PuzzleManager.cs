@@ -34,6 +34,12 @@ public class PuzzleManager : MonoBehaviour
         }
     }
 
+    public void LevelComplete()
+    {
+        // play animation
+    }
+
+
     public void LoadNextLevel()
     {
         levels[levelIndex].SetActive(false);
@@ -45,6 +51,7 @@ public class PuzzleManager : MonoBehaviour
         }
         else
         {
+            UpdateIndicators();
             Debug.LogWarning("Win Not impemeted");
         }
     }
