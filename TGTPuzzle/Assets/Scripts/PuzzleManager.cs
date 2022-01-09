@@ -18,8 +18,14 @@ public class PuzzleManager : MonoBehaviour
     [SerializeField]
     private GameObject[] levels;
 
-    private int levelIndex;
 
+    private Animator animator;
+
+    private int levelIndex;
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
     private void Start()
     {
         levelIndex = 0;
@@ -36,7 +42,7 @@ public class PuzzleManager : MonoBehaviour
 
     public void LevelComplete()
     {
-        // play animation
+        animator.SetTrigger("LevelComplete");
     }
 
 

@@ -27,7 +27,7 @@ public class GearLevel : MonoBehaviour
             }
         }
 
-        manager.LoadNextLevel();
+        manager.LevelComplete();
 
     }
 }
